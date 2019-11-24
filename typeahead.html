@@ -2,11 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>City Search</title>
+    <title>Airport Search</title>
     <style>
       html {
         box-sizing: border-box;
-        background: #ffc600;
+        background: #add8e6;
         font-family: "helvetica neue";
         font-size: 20px;
         font-weight: 200;
@@ -79,21 +79,21 @@
       }
 
       .hl {
-        background: #ffc600;
+        background: #add8e6;
       }
     </style>
   </head>
   <body>
     <form class="search-form">
-      <input type="text" class="search" placeholder="City or State" />
+      <input type="text" class="search" placeholder="City or Airport Code" />
       <ul class="suggestions">
         <li>Filter for a city</li>
-        <li>or a state</li>
+        <li>or a airport code</li>
       </ul>
     </form>
     <script>
       const endpoint =
-        "https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json";
+        "https://gist.githubusercontent.com/tdreyno/4278655/raw/7b0762c09b519f40397e4c3e100b097d861f5588/airports.json";
 
       const cities = [];
 
@@ -101,17 +101,19 @@
         .then(blob => blob.json())
         .then(data => cities.push(...data));
 
+      console.log(cities);
+
       function findMatches(wordToMatch, cities) {
         return cities.filter(place => {
           //here we need to figure out if the city or state matches what was searched
           const regex = new RegExp(wordToMatch, "gi");
-          return place.city.match(regex) || place.state.match(regex);
+          return place.city.match(regex) || place.code.match(regex);
         });
       }
 
-      function numberWithCommas(x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      }
+      // function numberWithCommas(x) {
+      //   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      // }
 
       function displayMatches() {
         const matchArray = findMatches(this.value, cities);
@@ -122,14 +124,13 @@
               regex,
               `<span class="hl">${this.value}</span>`
             );
-            const stateName = place.state.replace(
+            const codeName = place.code.replace(
               regex,
               `<span class="hl">${this.value}</span>`
             );
             return `
       <li>
-        <span class="name">${cityName}, ${stateName}</span>
-        <span class="popluation">${numberWithCommas(place.population)}</span>
+        <span class="name">${cityName}, ${codeName}</span>
       </li>
       `;
           })
